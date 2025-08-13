@@ -6,6 +6,8 @@ import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.JwtException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
@@ -30,17 +32,18 @@ public class JwtUtils {
         this.jwtExpirationMs = jwtExpirationMs;
     }
 
-    public String generateJwtToken(String username) {
-        long now = System.currentTimeMillis();
-        return Jwts.builder()
-                .setSubject(username)
-                .setIssuedAt(new Date(now))
-                .setExpiration(new Date(now + jwtExpirationMs))
-                .signWith(key, SignatureAlgorithm.HS256)
-                .compact();
+    public String generateJwtToken(Authentication authentication) {
+        String username;
+        Object principal = authentication.getPrincipal();
+        if (principal instanceof UserDetails ud) {
+            username = ud.getUsername();
+        } else {
+            username = authentication.getName();
+        }
+        return generateJwtToken(username); // call existing String-based method
     }
 
-    public String getEmailFromJwtToken(String token) {
+     public String getEmailFromJwtToken(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
