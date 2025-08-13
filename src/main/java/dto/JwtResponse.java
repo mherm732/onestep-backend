@@ -1,24 +1,12 @@
 package dto;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Data;
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class JwtResponse {
 	private String token;
-
-	public JwtResponse(String token) {
-		this.token = token;
-	}
-	
-	public String getToken() {
-		return token;
-	}
-
-	public void setToken(String token) {
-		this.token = token;
-	}
-	
-	
 }
