@@ -1,1 +1,13 @@
+<<<<<<< HEAD
 /target/
+=======
+/target
+/.idea
+/.project
+/.classpath
+/.settings
+/.vscode
+/*.iml
+/.mvn/wrapper/maven-wrapper.jar
+.env
+>>>>>>> 0298cdeb86c2e3a1a6f4dcdacaf75a76b3f1fbec
