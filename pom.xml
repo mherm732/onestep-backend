@@ -16,14 +16,15 @@
 	  <description>The One Step App</description>
 	
 	  <properties>
-	    <!-- Make the Java target explicit -->
 	    <java.version>21</java.version>
+		<maven.compiler.release>21</maven.compiler.release>
+		<maven.compiler.source>21</maven.compiler.source>
+		<maven.compiler.target>21</maven.compiler.target>
 	    <maven.compiler.release>21</maven.compiler.release>
 	    <spring-ai.version>1.0.0</spring-ai.version>
 	  </properties>
 	
 	  <dependencies>
-	    <!-- your existing deps unchanged -->
 	    <dependency>
 	      <groupId>org.springframework.boot</groupId>
 	      <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -127,19 +128,15 @@
 	
 	  <build>
 	    <plugins>
-	      <!-- Explicitly pin the compiler to release 21 -->
 	      <plugin>
 	        <groupId>org.apache.maven.plugins</groupId>
 	        <artifactId>maven-compiler-plugin</artifactId>
 	        <version>3.14.0</version>
 	        <configuration>
 	          <release>${maven.compiler.release}</release>
-	          <!-- If you keep annotationProcessorPaths, include versions.
-	               Or omit this entire block and rely on Lombok dependency. -->
 	        </configuration>
 	      </plugin>
 	
-	      <!-- Optional: produce a stable jar name target/app.jar -->
 	      <plugin>
 	        <groupId>org.springframework.boot</groupId>
 	        <artifactId>spring-boot-maven-plugin</artifactId>
