@@ -15,13 +15,13 @@ import jakarta.validation.constraints.Size;
 
 
 @Entity 
-@Table(name = "user")
+@Table(name = "users")
 public class User {
 	
 	@Id 
 	@GeneratedValue
 	@org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.CHAR)
-	@Column(name = "userId", nullable = false, updatable = false, columnDefinition = "CHAR(36)")
+	@Column(name = "user_id", nullable = false, updatable = false, columnDefinition = "CHAR(36)")
 	private UUID userId; 
 	
 	@NotBlank

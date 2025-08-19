@@ -12,6 +12,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 
 @Entity
@@ -20,7 +21,7 @@ public class Goal {
 	@Id
 	@GeneratedValue
 	@org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.CHAR)
-	@Column(name = "goalId", nullable = false, unique = true, columnDefinition = "CHAR(36)")
+	@Column(name = "goal_id", nullable = false, unique = true, columnDefinition = "CHAR(36)")
 	private UUID goalId;
 	
 	private String title; 
@@ -39,8 +40,8 @@ public class Goal {
     @Enumerated(EnumType.STRING)
 	private Status goalStatus;
     
-    @ManyToOne
-    @JoinColumn(name = "userId", nullable = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     private User user;
 	
 	public Goal() {

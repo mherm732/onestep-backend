@@ -8,9 +8,9 @@ import java.util.UUID;
 public class Step {
 	
 	@Id
-	@GeneratedValue 
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.CHAR)
-	@Column(name = "stepId", nullable = false, unique = true, columnDefinition = "CHAR(36)")
+	@Column(name = "step_id", nullable = false, unique = true, columnDefinition = "CHAR(36)")
 	private UUID stepId;
 	
 	private String stepDescription;
@@ -28,8 +28,8 @@ public class Step {
 	@Enumerated(EnumType.STRING)
 	private StepStatus status;
 	
-	@ManyToOne
-	@JoinColumn(name = "goalId", nullable = false)
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
+	@JoinColumn(name = "goal_id", referencedColumnName = "goal_id")
 	private Goal goal;
 	
 	public Step() {
