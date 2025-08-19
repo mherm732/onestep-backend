@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
 @ComponentScan(basePackages = {
-	    "com.example.OneStepV2", "controllers", "dto", "security", "service"
+	    "com.example.OneStepV2", "controllers", "dto", "security", "service", "repository", "model"
 	})
 @EntityScan(basePackages = {"model"})
 @EnableJpaRepositories(basePackages = {"repository"})
