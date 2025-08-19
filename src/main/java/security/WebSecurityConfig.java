@@ -1,13 +1,13 @@
 package security;
 
+import java.util.Arrays;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -24,22 +24,41 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableMethodSecurity
 public class WebSecurityConfig {
 
-    @Autowired
-    private AuthTokenFilter authTokenFilter;
+    private final AuthTokenFilter authTokenFilter;
 
-    @Autowired
-    private UserDetailsServiceImpl userDetailsService;
+    public WebSecurityConfig(AuthTokenFilter authTokenFilter) {
+        this.authTokenFilter = authTokenFilter;
+    }
+
+    @Value("${ALLOWED_ORIGINS:http://localhost:3000,http://localhost:5173}")
+    private String allowedOriginsCsv;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .cors(Customizer.withDefaults()) 
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**", "/users/test").permitAll()
-                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .requestMatchers("api/goals/steps/**","/api/goals/**", "/error", "/steps/**", "/ai/**").authenticated()
+                // Public endpoints
+                .requestMatchers(
+                    "/api/auth/**",
+                    "/users/test",
+                    "/actuator/health","/actuator/info",
+                    "/v3/api-docs/**","/swagger-ui/**","/swagger-ui.html",
+                    "/error"                       // let error pages render
+                ).permitAll()
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // CORS preflight
+
+                // Protected APIs
+                .requestMatchers(
+                    "/api/goals/steps/**",
+                    "/api/goals/**",
+                    "/steps/**",
+                    "/ai/**"
+                ).authenticated()
+
+                // Everything else requires auth
                 .anyRequest().authenticated()
             )
             .addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class);
@@ -60,18 +79,18 @@ public class WebSecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration cfg = new CorsConfiguration();
-        cfg.setAllowCredentials(true);
-        cfg.setAllowedOrigins(List.of(
-            "http://localhost:3000",
-            "http://localhost:5173",
-            "http://localhost:8081",
-            "https://<your-frontend-domain>"
-        ));
+        cfg.setAllowCredentials(true); 
+        List<String> origins = Arrays.stream(allowedOriginsCsv.split(","))
+                                     .map(String::trim)
+                                     .filter(s -> !s.isEmpty())
+                                     .toList();
+        cfg.setAllowedOrigins(origins);
+
         cfg.setAllowedMethods(List.of("GET","POST","PUT","DELETE","PATCH","OPTIONS"));
         cfg.setAllowedHeaders(List.of("*"));
+
         UrlBasedCorsConfigurationSource src = new UrlBasedCorsConfigurationSource();
         src.registerCorsConfiguration("/**", cfg);
         return src;
     }
-
 }
