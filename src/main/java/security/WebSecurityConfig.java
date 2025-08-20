@@ -30,7 +30,7 @@ public class WebSecurityConfig {
         this.authTokenFilter = authTokenFilter;
     }
 
-    @Value("${ALLOWED_ORIGINS:http://localhost:3000,http://localhost:5173}")
+    @Value("${ALLOWED_ORIGINS:${allowed.origins:http://localhost:3000,http://localhost:5173}}")
     private String allowedOriginsCsv;
 
     @Bean
@@ -78,19 +78,23 @@ public class WebSecurityConfig {
 
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration cfg = new CorsConfiguration();
-        cfg.setAllowCredentials(true); 
-        List<String> origins = Arrays.stream(allowedOriginsCsv.split(","))
-                                     .map(String::trim)
-                                     .filter(s -> !s.isEmpty())
-                                     .toList();
-        cfg.setAllowedOrigins(origins);
+        var cfg = new CorsConfiguration();
+        cfg.setAllowCredentials(true);
+
+        cfg.setAllowedOriginPatterns(List.of(
+            "https://1stp.io",
+            "https://www.1stp.io",
+            "https://*.netlify.app",
+            "http://localhost:3000",
+            "http://localhost:5173"
+        ));
 
         cfg.setAllowedMethods(List.of("GET","POST","PUT","DELETE","PATCH","OPTIONS"));
         cfg.setAllowedHeaders(List.of("*"));
 
-        UrlBasedCorsConfigurationSource src = new UrlBasedCorsConfigurationSource();
+        var src = new UrlBasedCorsConfigurationSource();
         src.registerCorsConfiguration("/**", cfg);
         return src;
     }
+
 }
