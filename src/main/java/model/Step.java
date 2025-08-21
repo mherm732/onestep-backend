@@ -4,23 +4,28 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import org.hibernate.annotations.JdbcTypeCode;
+
 @Entity
 @Table(name = "steps")
 public class Step {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.CHAR)
-	@Column(name = "step_id", nullable = false, unique = true, columnDefinition = "CHAR(36)")
+	@GeneratedValue
+	@org.hibernate.annotations.UuidGenerator
+	@JdbcTypeCode(org.hibernate.type.SqlTypes.CHAR)
+	@Column(name="step_id", length=36, updatable=false, nullable=false)
 	private UUID stepId;
-	
+
 	private String stepDescription;
+	
+	@Column(name = "date_created")
 	private LocalDateTime dateCreated;
 
-	@Column(name = "dateCompleted", nullable = true)
+	@Column(name = "date_completed", nullable = true)
 	private LocalDateTime dateCompleted;
 
-	@Column(name = "dueDate", nullable = true)
+	@Column(name = "due_date", nullable = true)
 	private LocalDateTime dueDate;
 	
     private Boolean isAiGenerated;
