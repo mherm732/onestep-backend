@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import dto.GoalDTO;
 import model.Goal;
 import service.GoalService;
 import service.StepService;
@@ -33,75 +34,41 @@ public class GoalController {
     @Autowired 
     private StepService stepService;
 
+ // controllers/GoalController.java
     @GetMapping("/user")
-    public ResponseEntity<List<Goal>> getGoalsForAuthenticatedUser(Authentication authentication) {
-       
-    	if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).build();
-        }
-
-        String email = authentication.getName();
-        List<Goal> goals = goalService.getGoalsByEmail(email);
-        return ResponseEntity.ok(goals);
+    public ResponseEntity<List<GoalDTO>> getGoalsForAuthenticatedUser(Authentication auth) {
+      if (auth == null || !auth.isAuthenticated()) return ResponseEntity.status(401).build();
+      var email = auth.getName();
+      var goals = goalService.getGoalsByEmail(email).stream().map(GoalDTO::from).toList();
+      return ResponseEntity.ok(goals);
     }
-	
-	@PostMapping("/create")
-	public ResponseEntity<Goal> createGoal(@RequestBody Goal goal, Authentication authentication){
-		String email = authentication.getName();
-		System.out.println("Received JSON title: " + goal.getTitle());
-		System.out.println("Received JSON description: " + goal.getGoalDescription());
-		System.out.println("Received JSON status: " + goal.getGoalStatus());
-		return ResponseEntity.ok(goalService.createGoalForEmail(email, goal));
-	}
-	
-	@GetMapping("/user/{userId}")
-	public ResponseEntity<List<Goal>> getGoalsByUser(@PathVariable UUID userId){
-		return ResponseEntity.ok(goalService.getGoalsByUserId(userId));
-	}
-	
-	@GetMapping("/completed")
-	public ResponseEntity<List<Goal>> getCompletedGoals(){
-		return ResponseEntity.ok(goalService.getCompletedGoalsForUser());
-	}
-	
-	@GetMapping("/in-progress")
-	public ResponseEntity<List<Goal>> getInProgressGoals() {
-		return ResponseEntity.ok(goalService.getInProgressGoalsForUser());
-	}
-	
-	@PutMapping("/update/{goalId}")
-	public ResponseEntity<Goal> updateGoalById(@RequestBody Goal goal, @PathVariable UUID goalId){
-		Goal updatedGoal = goalService.updateGoal(goalId, goal);
-		return ResponseEntity.ok(updatedGoal);
-	}
-	
-	@PutMapping("/update/complete/{goalId}")
-	public ResponseEntity<Goal> markCompleteByGoalId(@PathVariable UUID goalId){
-		Goal completedGoal = goalService.markGoalAsCompleted(goalId);
-		return ResponseEntity.ok(completedGoal);
-	}
-	
-	@DeleteMapping("/{goalId}")
-	@PreAuthorize("isAuthenticated()")
-	public ResponseEntity<String> deleteGoalById(@PathVariable("goalId") UUID goalId, Authentication authentication) {
-	    String email = authentication.getName();
 
-	    Optional<Goal> optionalGoal = goalService.getGoalByGoalId(goalId);
-	    
-	    if (optionalGoal.isEmpty()) {
-	        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Goal not found");
-	    }
+    @GetMapping("/completed")
+    public ResponseEntity<List<GoalDTO>> getCompletedGoals(Authentication auth){
+      var email = auth.getName();
+      var goals = goalService.getCompletedGoalsForUser(email).stream().map(GoalDTO::from).toList();
+      return ResponseEntity.ok(goals);
+    }
 
-	    Goal goal = optionalGoal.get();
+    @GetMapping("/in-progress")
+    public ResponseEntity<List<GoalDTO>> getInProgressGoals(Authentication auth) {
+      var email = auth.getName();
+      var goals = goalService.getInProgressGoalsForUser(email).stream().map(GoalDTO::from).toList();
+      return ResponseEntity.ok(goals);
+    }
 
-	    if (!goal.getUser().getEmail().equals(email)) {
-	        throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not own this goal");
-	    }
+    @PostMapping("/create")
+    public ResponseEntity<GoalDTO> createGoal(@RequestBody Goal goal, Authentication auth){
+      Goal created = goalService.createGoal(auth.getName(), goal);
+      return ResponseEntity.status(HttpStatus.CREATED).body(GoalDTO.from(created));
+    }
 
-	    stepService.deleteAllStepsByGoalId(goalId); 
-	    goalService.deleteGoal(goalId);
-	    return ResponseEntity.ok("Goal deleted.");
-	}
+    @DeleteMapping("/{goalId}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Void> deleteGoalById(@PathVariable UUID goalId, Authentication auth) {
+      goalService.deleteOwnedGoal(auth.getName(), goalId); // move checks into service
+      return ResponseEntity.noContent().build(); // 204
+    }
 
 	
 }

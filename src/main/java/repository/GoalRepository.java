@@ -18,7 +18,11 @@ public interface GoalRepository extends JpaRepository<Goal, UUID> {
  	List<Goal> findByUser_UserId(UUID userId);
 	List<Goal> findByUser(User user);
 	List<Goal> findByGoalStatus(Status goalStatus);
-
+	List<Goal> findAllByUser_EmailOrderByDateCreatedDesc(String email);
+	List<Goal> findAllByUser_EmailAndGoalStatusOrderByDateCreatedDesc(String email, Status goalStatus);
+	int deleteByGoalIdAndUser_Email(UUID goalId, String email);
+	Optional<Goal> findByTitleIgnoreCaseAndUser_UserId(String title, UUID userId);
+	Optional<User> findByTitleIgnoreCaseAndUser_Email(String title, String email);
 }
 
 
