@@ -42,7 +42,7 @@ public class Goal {
     
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
-    private User userId;
+    private User user;
 	
 	public Goal() {
 		this.dateCreated = LocalDateTime.now();
@@ -124,11 +124,11 @@ public class Goal {
 	}
 	
 	public User getUser() {
-		return userId;
+		return user;
 	}
 	
 	public void setUser(User user) {
-		this.userId = user;
+		this.user = user;
 	}
 	
 	@Override 
