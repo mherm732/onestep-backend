@@ -124,11 +124,11 @@ public class Goal {
 	}
 	
 	public User getUser() {
-		return user;
+		return userId;
 	}
 	
 	public void setUser(User user) {
-		this.user = user;
+		this.userId = user;
 	}
 	
 	@Override 
