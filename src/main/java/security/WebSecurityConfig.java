@@ -30,7 +30,7 @@ public class WebSecurityConfig {
         this.authTokenFilter = authTokenFilter;
     }
 
-    @Value("${ALLOWED_ORIGINS:${allowed.origins:http://localhost:3000,http://localhost:5173}}")
+    @Value("${ALLOWED_ORIGINS:${allowed.origins:https://onestep-backend-production-9ac1.up.railway.app, http://localhost:3000,http://localhost:5173}}")
     private String allowedOriginsCsv;
 
     @Bean
