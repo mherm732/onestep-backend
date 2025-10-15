@@ -30,9 +30,6 @@ public class GoalService {
     }
 
     var title = goal.getTitle().trim();
-    if (goalRepository.findByTitleIgnoreCaseAndUser_Email(title, email).isPresent()) {
-      throw new IllegalStateException("Goal with that title already exists");
-    }
 
     var g = new Goal();
     g.setTitle(title);
