@@ -42,7 +42,7 @@ public class Goal {
     
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
-    private User user;
+    private User userId;
 	
 	public Goal() {
 		this.dateCreated = LocalDateTime.now();
