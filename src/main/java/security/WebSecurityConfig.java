@@ -82,6 +82,7 @@ public class WebSecurityConfig {
         cfg.setAllowCredentials(true);
 
         cfg.setAllowedOriginPatterns(List.of(
+        	"https://onestep-backend-production-9ac1.up.railway.app",
             "https://1stp.io",
             "https://www.1stp.io",
             "https://*.netlify.app",
