@@ -49,17 +49,6 @@ public class Goal {
 		this.goalStatus = Status.IN_PROGRESS;
 	}
 	
-	/*public Goal(String title, LocalDateTime dateCreated, LocalDateTime dateCompleted, int totalSteps, int stepsCompleted, Status goalStatus) {
-	
-		this.title = title;
-		//this.goalDescription = goalDescription;
-		this.dateCreated = dateCreated;
-		dateCompleted = null;
-		this.totalSteps = totalSteps;
-		this.stepsCompleted = stepsCompleted;
-		this.goalStatus = goalStatus;
-	}*/
-	
 	public UUID getGoalId() {
 		return goalId;
 	}
@@ -76,7 +65,6 @@ public class Goal {
 		return title;
 	}
 	
-
 	@JsonProperty("goalDescription")
 	public void setGoalDescription(String goalDescription) {
 		this.goalDescription = goalDescription;
@@ -141,8 +129,5 @@ public class Goal {
 				"Date Completed: " + dateCompleted + "\n" +
 				"Goal Status: " + goalStatus + "\n" + 
 				"---------------------";
-		
 	}
-
-	
 }

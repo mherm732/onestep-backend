@@ -25,6 +25,10 @@ public class GoalService {
     var user = userRepository.findByEmail(email)
         .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
+    if (goal.getTitle() == null || goal.getTitle().isBlank()) {
+      throw new IllegalArgumentException("Goal title is required");
+    }
+
     var title = goal.getTitle().trim();
     if (goalRepository.findByTitleIgnoreCaseAndUser_Email(title, email).isPresent()) {
       throw new IllegalStateException("Goal with that title already exists");

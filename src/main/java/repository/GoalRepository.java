@@ -22,7 +22,7 @@ public interface GoalRepository extends JpaRepository<Goal, UUID> {
 	List<Goal> findAllByUser_EmailAndGoalStatusOrderByDateCreatedDesc(String email, Status goalStatus);
 	int deleteByGoalIdAndUser_Email(UUID goalId, String email);
 	Optional<Goal> findByTitleIgnoreCaseAndUser_UserId(String title, UUID userId);
-	Optional<User> findByTitleIgnoreCaseAndUser_Email(String title, String email);
+	Optional<Goal> findByTitleIgnoreCaseAndUser_Email(String title, String email);
 }
 
 

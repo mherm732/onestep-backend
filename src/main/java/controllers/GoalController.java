@@ -58,9 +58,15 @@ public class GoalController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<GoalDTO> createGoal(@RequestBody Goal goal, Authentication auth){
-      Goal created = goalService.createGoal(auth.getName(), goal);
-      return ResponseEntity.status(HttpStatus.CREATED).body(GoalDTO.from(created));
+    public ResponseEntity<?> createGoal(@RequestBody Goal goal, Authentication auth){
+      try {
+        Goal created = goalService.createGoal(auth.getName(), goal);
+        return ResponseEntity.status(HttpStatus.CREATED).body(GoalDTO.from(created));
+      } catch (IllegalArgumentException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+      } catch (IllegalStateException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+      }
     }
 
     @DeleteMapping("/{goalId}")
