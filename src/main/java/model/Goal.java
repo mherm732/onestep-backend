@@ -26,7 +26,7 @@ public class Goal {
 	
 	private String title; 
 	
-	@JsonProperty("goalDescription")
+	@JsonProperty("goal_description")
 	private String goalDescription;
 	
 	private LocalDateTime dateCreated;
@@ -65,12 +65,12 @@ public class Goal {
 		return title;
 	}
 	
-	@JsonProperty("goalDescription")
+	@JsonProperty("goal_description")
 	public void setGoalDescription(String goalDescription) {
 		this.goalDescription = goalDescription;
 	}
 	
-	@JsonProperty("goalDescription")
+	@JsonProperty("goal_description")
 	public String getGoalDescription() {
 		return goalDescription;
 	}
