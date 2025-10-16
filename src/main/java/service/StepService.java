@@ -41,21 +41,21 @@ public class StepService {
 	        new RuntimeException("Goal not found"));
 	    
 		System.out.println("Creating new step for user goal...Processing...");
-		
-		Optional<Step> existingStep = stepRepository.findByStepDescription(step.getStepDescription());
-		
+
+		Optional<Step> existingStep = stepRepository.findByStepDescriptionAndGoal_GoalId(step.getStepDescription(), goalId);
+
 		if(existingStep.isPresent()) {
 			throw new RuntimeException("Step already exists for goal.");
 		}
 		
 		Step newStep = new Step();
 		newStep.setStepDescription(step.getStepDescription());
-		
-		if(getStepsByGoalId(goalId).isEmpty()) {
-			newStep.setStepOrder(step.getStepOrder());
+
+		List<Step> existingSteps = getStepsByGoalId(goalId);
+		if(existingSteps.isEmpty()) {
+			newStep.setStepOrder(0);
 		} else {
-			List<Step> steps = getStepsByGoalId(goalId);
-			newStep.setStepOrder(steps.size());
+			newStep.setStepOrder(existingSteps.size());
 		}
 		
 		newStep.setIsAiGenerated(step.getIsAiGenerated());

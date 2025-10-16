@@ -12,6 +12,6 @@ import java.util.UUID;
 
 public interface StepRepository extends JpaRepository<Step, UUID> {
     List<Step> findByGoal_GoalId(UUID goalId);
-    Optional<Step> findByStepDescription(String stepDescription);
+    Optional<Step> findByStepDescriptionAndGoal_GoalId(String stepDescription, UUID goalId);
 	List<Step> findByStatus(StepStatus status);
 }
