@@ -24,8 +24,9 @@ public class Goal {
 	@Column(name = "goal_id", nullable = false, unique = true, columnDefinition = "CHAR(36)")
 	private UUID goalId;
 	
-	private String title; 
-	
+	private String title;
+
+	@JsonProperty("goal_description")
 	private String goalDescription;
 	
 	private LocalDateTime dateCreated;
@@ -64,12 +65,10 @@ public class Goal {
 		return title;
 	}
 	
-	@JsonProperty("goal_description")
 	public void setGoalDescription(String goalDescription) {
 		this.goalDescription = goalDescription;
 	}
-	
-	@JsonProperty("goal_description")
+
 	public String getGoalDescription() {
 		return goalDescription;
 	}
