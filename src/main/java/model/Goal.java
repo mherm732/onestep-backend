@@ -26,7 +26,6 @@ public class Goal {
 	
 	private String title; 
 	
-	@JsonProperty("goal_description")
 	private String goalDescription;
 	
 	private LocalDateTime dateCreated;

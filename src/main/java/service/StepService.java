@@ -16,7 +16,6 @@ import model.Goal;
 import model.Step;
 import model.StepStatus;
 import model.User;
-import service.GoalService;
 import repository.GoalRepository;
 import repository.StepRepository;
 import repository.UserRepository;
