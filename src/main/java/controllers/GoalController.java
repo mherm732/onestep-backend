@@ -60,7 +60,9 @@ public class GoalController {
     @PostMapping("/create")
     public ResponseEntity<?> createGoal(@RequestBody Goal goal, Authentication auth){
       try {
+        System.out.println("DEBUG: Received goal - Title: " + goal.getTitle() + ", Description: " + goal.getGoalDescription());
         Goal created = goalService.createGoal(auth.getName(), goal);
+        System.out.println("DEBUG: Created goal - Title: " + created.getTitle() + ", Description: " + created.getGoalDescription());
         return ResponseEntity.status(HttpStatus.CREATED).body(GoalDTO.from(created));
       } catch (IllegalArgumentException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
