@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import dto.StepDTO;
 import model.Step;
 import service.StepService;
 
@@ -50,10 +51,10 @@ public class StepController {
 	}
 	
 	@GetMapping("/{goalId}/current")
-	public ResponseEntity<Step> getCurrentStep(@PathVariable UUID goalId, Authentication authentication) {
+	public ResponseEntity<StepDTO> getCurrentStep(@PathVariable UUID goalId, Authentication authentication) {
 		String email = authentication.getName();
-	    Step current = stepService.getCurrentStepForGoal(goalId, email); 
-	    return ResponseEntity.ok(current);
+	    Step current = stepService.getCurrentStepForGoal(goalId, email);
+	    return ResponseEntity.ok(StepDTO.from(current));
 	}
 
 	@GetMapping("/completed")
