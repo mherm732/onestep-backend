@@ -37,7 +37,7 @@ public class StepController {
 			Step newStep = stepService.createStep(email, goalId, step);
 			stepService.updateStepCountForGoal(goalId);
 			System.out.println("User is creating a step: " + authentication.getName());
-			return ResponseEntity.ok(newStep);
+			return ResponseEntity.ok(StepDTO.from(newStep));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
@@ -46,8 +46,10 @@ public class StepController {
 	}
 	
 	@GetMapping("/goal/{goalId}")
-	public ResponseEntity<List<Step>> getStepsByGoal(@PathVariable UUID goalId){
-		return ResponseEntity.ok(stepService.getStepsByGoalId(goalId));
+	public ResponseEntity<List<StepDTO>> getStepsByGoal(@PathVariable UUID goalId){
+		List<Step> steps = stepService.getStepsByGoalId(goalId);
+		List<StepDTO> stepDTOs = steps.stream().map(StepDTO::from).toList();
+		return ResponseEntity.ok(stepDTOs);
 	}
 	
 	@GetMapping("/{goalId}/current")
@@ -58,26 +60,28 @@ public class StepController {
 	}
 
 	@GetMapping("/completed")
-	public ResponseEntity<List<Step>> getCompletedSteps() {
-		return ResponseEntity.ok(stepService.getCompletedStepsForUser());
+	public ResponseEntity<List<StepDTO>> getCompletedSteps() {
+		List<Step> steps = stepService.getCompletedStepsForUser();
+		List<StepDTO> stepDTOs = steps.stream().map(StepDTO::from).toList();
+		return ResponseEntity.ok(stepDTOs);
 	}
 	
 	@PutMapping("/update/{stepId}")
-	public ResponseEntity<Step> updateStepById(@RequestBody Step step, @PathVariable UUID stepId) {
+	public ResponseEntity<StepDTO> updateStepById(@RequestBody Step step, @PathVariable UUID stepId) {
 		Step updatedStep = stepService.updateStep(stepId, step);
-		return ResponseEntity.ok(updatedStep);
+		return ResponseEntity.ok(StepDTO.from(updatedStep));
 	}
 	
 	@PutMapping("/update/mark-complete/{stepId}")
-	public ResponseEntity<Step> markCompleteByStepId(@PathVariable UUID stepId){
+	public ResponseEntity<StepDTO> markCompleteByStepId(@PathVariable UUID stepId){
 		Step completedStep = stepService.markStepAsCompleted(stepId);
-		return ResponseEntity.ok(completedStep);
+		return ResponseEntity.ok(StepDTO.from(completedStep));
 	}
 	
 	@PutMapping("/skip/{stepId}")
-	public ResponseEntity<Step> skipCurrentStep(@PathVariable UUID stepId){
+	public ResponseEntity<StepDTO> skipCurrentStep(@PathVariable UUID stepId){
 		Step skippedStep = stepService.markStepAsSkipped(stepId);
-		return ResponseEntity.ok(skippedStep);
+		return ResponseEntity.ok(StepDTO.from(skippedStep));
 	}
 	
 	@DeleteMapping("/delete/{stepId}")
