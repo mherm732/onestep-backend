@@ -78,18 +78,26 @@ public class StepService {
 	}
 
 	public Step getCurrentStepForGoal(UUID goalId, String userEmail) {
-	    Goal goal = goalRepository.findByIdWithUser(goalId)
+		System.out.println("Getting current step for user goal..." + goalId);
+	    
+		Goal goal = goalRepository.findByIdWithUser(goalId)
 	        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Goal not found"));
-
+	    
+		System.out.println("Goal found... authorizing user...");
+		
 	    if (!goal.getUser().getEmail().equals(userEmail)) {
 	        throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access denied to this goal");
 	    }
-
+		
+		System.out.println("User authorized... getting steps for goal...");
+	    
 	    List<Step> steps = getStepsByGoalId(goalId);
 
 	    if (steps.isEmpty()) {
 	        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No steps found for this goal");
 	    }
+	    
+	    System.out.println("Steps found for goal... searching for current step...");
 	    
 	    Step current = null;
 	    
@@ -97,11 +105,14 @@ public class StepService {
 	        if (step.getStatus() == StepStatus.IN_PROGRESS || step.getStatus() == StepStatus.PENDING) {
 	           if(current == null || step.getStepOrder() < current.getStepOrder()) {
 	        	   current = step;
+	        	   System.out.println("Current step description: " + current.getStepDescription());
+	        	   System.out.println("Current step status: " + current.getStatus());
 	           }
 	        }
 	     }
 	    
 	    if (current != null) {
+	    	System.out.println("Current step found!...Returning to user...");
 	    	return current;
 	    } else {
 	    	throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No active steps found for this goal");

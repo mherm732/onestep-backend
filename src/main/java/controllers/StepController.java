@@ -72,10 +72,16 @@ public class StepController {
 	}
 	
 	@GetMapping("/{goalId}/current")
-	public ResponseEntity<StepDTO> getCurrentStep(@PathVariable UUID goalId, Authentication authentication) {
-		String email = authentication.getName();
-	    Step current = stepService.getCurrentStepForGoal(goalId, email);
-	    return ResponseEntity.ok(StepDTO.from(current));
+	public ResponseEntity<?> getCurrentStep(@PathVariable UUID goalId, Authentication authentication) {
+		try {
+			String email = authentication.getName();
+		    Step current = stepService.getCurrentStepForGoal(goalId, email);
+		    return ResponseEntity.ok(StepDTO.from(current));
+		} catch (Exception e) {
+			System.err.println("Error fetching current step " + e.getClass().getName() + ":" + e.getMessage());
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to fetch current step: " + e.getMessage());
+		}
 	}
 
 	@GetMapping("/completed")
