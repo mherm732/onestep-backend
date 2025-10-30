@@ -19,7 +19,6 @@ public class Step {
 	@Column(name="step_id", length=36, updatable=false, nullable=false)
 	private UUID stepId;
 
-	@JsonProperty("step_description") 
 	private String stepDescription;
 	
 	@Column(name = "date_created")
