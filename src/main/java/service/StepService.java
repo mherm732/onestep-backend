@@ -95,7 +95,7 @@ public class StepService {
 	    
 	    for (Step step : steps) {
 	        if (step.getStatus() == StepStatus.IN_PROGRESS || step.getStatus() == StepStatus.PENDING) {
-	           if(current == null || step.getStepOrder() < current.getStepOrder() && step.getStepOrder() > 0) {
+	           if(current == null || step.getStepOrder() < current.getStepOrder()) {
 	        	   current = step;
 	           }
 	        }
