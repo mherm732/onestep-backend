@@ -38,6 +38,12 @@ public class StepController {
 			System.out.println("Incoming step description: " + step.getStepDescription());
 			System.out.println("Incoming step isAiGenerated: " + step.getIsAiGenerated());
 
+			// Validate step description
+			if (step.getStepDescription() == null || step.getStepDescription().trim().isEmpty()) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+						.body("Step description is required and cannot be empty");
+			}
+
 			Step newStep = stepService.createStep(email, goalId, step);
 
 			System.out.println("Step created successfully. ID: " + newStep.getStepId());

@@ -41,10 +41,13 @@ public class StepService {
 	    
 		System.out.println("Creating new step for user goal...Processing...");
 
-		Optional<Step> existingStep = stepRepository.findByStepDescriptionAndGoal_GoalId(step.getStepDescription(), goalId);
+		// Only check for duplicates if description is provided
+		if (step.getStepDescription() != null && !step.getStepDescription().trim().isEmpty()) {
+			Optional<Step> existingStep = stepRepository.findByStepDescriptionAndGoal_GoalId(step.getStepDescription(), goalId);
 
-		if(existingStep.isPresent()) {
-			throw new RuntimeException("Step already exists for goal.");
+			if(existingStep.isPresent()) {
+				throw new RuntimeException("Step already exists for goal.");
+			}
 		}
 		
 		Step newStep = new Step();
