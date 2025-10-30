@@ -15,6 +15,9 @@ public record StepDTO(
     String status
 ) {
     public static StepDTO from(Step step) {
+        if (step == null) {
+            return null;
+        }
         return new StepDTO(
             step.getStepId(),
             step.getStepDescription(),
@@ -23,7 +26,7 @@ public record StepDTO(
             step.getDueDate(),
             step.getIsAiGenerated(),
             step.getStepOrder(),
-            step.getStatus().name()
+            step.getStatus() != null ? step.getStatus().name() : "PENDING"
         );
     }
 }

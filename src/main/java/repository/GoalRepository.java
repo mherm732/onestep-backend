@@ -5,14 +5,20 @@ import model.Status;
 import model.User;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 public interface GoalRepository extends JpaRepository<Goal, UUID> {
-	
+
 	Optional<Goal> findById(UUID goalId);
+
+	@Query("SELECT g FROM Goal g JOIN FETCH g.user WHERE g.goalId = :goalId")
+	Optional<Goal> findByIdWithUser(@Param("goalId") UUID goalId);
+
 	Optional<Goal> findByTitle(String title);
 	Optional<Goal> findByTitleAndUser_UserId(String title, UUID userId);
  	List<Goal> findByUser_UserId(UUID userId);

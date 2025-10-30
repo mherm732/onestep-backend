@@ -75,7 +75,7 @@ public class StepService {
 	}
 
 	public Step getCurrentStepForGoal(UUID goalId, String userEmail) {
-	    Goal goal = goalRepository.findById(goalId)
+	    Goal goal = goalRepository.findByIdWithUser(goalId)
 	        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Goal not found"));
 
 	    if (!goal.getUser().getEmail().equals(userEmail)) {
