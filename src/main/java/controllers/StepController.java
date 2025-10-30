@@ -31,16 +31,7 @@ public class StepController {
 	
 	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/create/{goalId}")
-	public ResponseEntity<?> createStep(@RequestBody String rawBody, @PathVariable UUID goalId, Authentication authentication){
-		System.out.println("=== RAW REQUEST BODY ===");
-		System.out.println(rawBody);
-		System.out.println("========================");
-		return ResponseEntity.ok("Debug: Check console for request body");
-	}
-
-	@PreAuthorize("isAuthenticated()")
-	@PostMapping("/create-old/{goalId}")
-	public ResponseEntity<?> createStepOld(@RequestBody Step step, @PathVariable UUID goalId, Authentication authentication){
+	public ResponseEntity<?> createStep(@RequestBody Step step, @PathVariable UUID goalId, Authentication authentication){
 		try {
 			String email = authentication.getName();
 			System.out.println("User is creating a step: " + email);
