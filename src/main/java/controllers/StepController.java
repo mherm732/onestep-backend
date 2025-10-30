@@ -34,11 +34,24 @@ public class StepController {
 	public ResponseEntity<?> createStep(@RequestBody Step step, @PathVariable UUID goalId, Authentication authentication){
 		try {
 			String email = authentication.getName();
+			System.out.println("User is creating a step: " + email);
+			System.out.println("Incoming step description: " + step.getStepDescription());
+			System.out.println("Incoming step isAiGenerated: " + step.getIsAiGenerated());
+
 			Step newStep = stepService.createStep(email, goalId, step);
+
+			System.out.println("Step created successfully. ID: " + newStep.getStepId());
+			System.out.println("Status: " + newStep.getStatus());
+			System.out.println("Description: " + newStep.getStepDescription());
+
 			stepService.updateStepCountForGoal(goalId);
-			System.out.println("User is creating a step: " + authentication.getName());
-			return ResponseEntity.ok(StepDTO.from(newStep));
+
+			StepDTO dto = StepDTO.from(newStep);
+			System.out.println("DTO created successfully");
+
+			return ResponseEntity.ok(dto);
 		} catch (Exception e) {
+			System.err.println("Error creating step: " + e.getClass().getName() + ": " + e.getMessage());
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
 					"Failed to create step: " + e.getMessage());
