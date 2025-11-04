@@ -83,7 +83,7 @@ public class ChatController {
         }
 
         Step aiStep = new Step();
-        stepService.createStep(email, goalId, null)
+        stepService.createStep(email, goalId, null);
         aiStep.setIsAiGenerated(true);
         
         StepDTO dto = StepDTO.from(aiStep);
