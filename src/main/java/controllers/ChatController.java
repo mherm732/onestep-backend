@@ -15,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import dto.StepDTO;
 import model.Goal;
 import model.Step;
 import model.StepStatus;
@@ -39,7 +40,7 @@ public class ChatController {
 
     @PostMapping("/generateStep")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Step> generateAndSaveStep(
+    public ResponseEntity<StepDTO> generateAndSaveStep(
             @RequestParam("goalId") UUID goalId,
             Authentication authentication) {
 
@@ -82,15 +83,12 @@ public class ChatController {
         }
 
         Step aiStep = new Step();
-        aiStep.setStepDescription(stepDescription);
-        aiStep.setGoal(goal);
-        aiStep.setStepOrder(stepService.getNextStepOrder(goal));
-        aiStep.setStatus(StepStatus.PENDING);
+        stepService.createStep(email, goalId, null)
         aiStep.setIsAiGenerated(true);
-        aiStep.setDateCreated(LocalDateTime.now());
-
-        stepRepository.save(aiStep);
-        return ResponseEntity.ok(aiStep);
+        
+        StepDTO dto = StepDTO.from(aiStep);
+        
+        return ResponseEntity.ok(dto);
     }
 
 }
