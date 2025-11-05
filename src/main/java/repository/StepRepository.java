@@ -14,4 +14,5 @@ public interface StepRepository extends JpaRepository<Step, UUID> {
     List<Step> findByGoal_GoalId(UUID goalId);
     Optional<Step> findByStepDescriptionAndGoal_GoalId(String stepDescription, UUID goalId);
 	List<Step> findByStatus(StepStatus status);
+	int deleteByGoal_GoalId(UUID goalId);
 }

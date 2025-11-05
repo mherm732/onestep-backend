@@ -4,6 +4,7 @@ import model.Goal;
 import model.Status;
 import model.User;
 import repository.GoalRepository;
+import repository.StepRepository;
 import repository.UserRepository;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class GoalService {
 
   @Autowired private GoalRepository goalRepository;
   @Autowired private UserRepository userRepository;
+  @Autowired private StepRepository stepRepository;
 
   public Goal createGoal(String email, Goal goal) {
     var user = userRepository.findByEmail(email)
@@ -73,8 +75,19 @@ public class GoalService {
   }
 
   public void deleteOwnedGoal(String email, UUID goalId) {
-    int rows = goalRepository.deleteByGoalIdAndUser_Email(goalId, email);
-    if (rows == 0) throw new IllegalArgumentException("Not found or not owned");
+    // First verify the goal exists and is owned by the user
+    var goal = goalRepository.findById(goalId)
+        .orElseThrow(() -> new IllegalArgumentException("Goal not found"));
+
+    if (!goal.getUser().getEmail().equals(email)) {
+      throw new IllegalArgumentException("Not authorized to delete this goal");
+    }
+
+    // Delete all associated steps first
+    stepRepository.deleteByGoal_GoalId(goalId);
+
+    // Then delete the goal
+    goalRepository.deleteById(goalId);
   }
 
   @Transactional(readOnly = true)
