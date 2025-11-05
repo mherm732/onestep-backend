@@ -78,5 +78,12 @@ public class GoalController {
       return ResponseEntity.noContent().build(); // 204
     }
 
-	
+    @PutMapping("/update/complete/{goalId}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<GoalDTO> markCompleteByGoalId(@PathVariable UUID goalId, Authentication auth) {
+      Goal completedGoal = goalService.markOwnedGoalAsCompleted(auth.getName(), goalId);
+      return ResponseEntity.ok(GoalDTO.from(completedGoal));
+    }
+
+
 }

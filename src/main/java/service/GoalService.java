@@ -74,6 +74,19 @@ public class GoalService {
     return goalRepository.save(g);
   }
 
+  public Goal markOwnedGoalAsCompleted(String email, UUID goalId) {
+    // First verify the goal exists and is owned by the user
+    var goal = goalRepository.findById(goalId)
+        .orElseThrow(() -> new IllegalArgumentException("Goal not found"));
+
+    if (!goal.getUser().getEmail().equals(email)) {
+      throw new IllegalArgumentException("Not authorized to complete this goal");
+    }
+
+    goal.setGoalStatus(Status.COMPLETED);
+    return goalRepository.save(goal);
+  }
+
   public void deleteOwnedGoal(String email, UUID goalId) {
     // First verify the goal exists and is owned by the user
     var goal = goalRepository.findById(goalId)
