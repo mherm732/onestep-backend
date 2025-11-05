@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -40,6 +41,7 @@ public class ChatController {
 
     @PostMapping("/generateStep")
     @PreAuthorize("isAuthenticated()")
+    @Transactional
     public ResponseEntity<StepDTO> generateAndSaveStep(
             @RequestParam("goalId") UUID goalId,
             Authentication authentication) {
@@ -48,7 +50,8 @@ public class ChatController {
 
         Goal goal = goalRepository.findById(goalId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Goal not found"));
-
+        System.out.println("Goal found... processing...");
+        
         if (!goal.getUser().getEmail().equals(email)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Unauthorized");
         }
